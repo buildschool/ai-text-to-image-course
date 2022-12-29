@@ -1,11 +1,5 @@
 import React from 'react';
-import { Configuration, OpenAIApi } from 'openai';
-
-const configuration = new Configuration({
-    apiKey: process.env.NEXT_PUBLIC_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
+import { getPhoto } from '../service/service';
 
 const Index = () => {
     const [prompt, setPrompt] = React.useState('an apple on fire');
@@ -14,16 +8,15 @@ const Index = () => {
     const onClick = async () => {
         if (prompt) {
           setLoading(true);
-          const response = await openai.createImage({
-            prompt: prompt,
-            n: 1,
-            size: '1024x1024',
-          }).catch(err => console.log(err));
-          if (response) {
-            const image_url = response.data.data[0].url;
-            setImage(image_url);
-            setLoading(false);
-          };
+          getPhoto(prompt)
+            .then(res => {
+                const image_url = res.data.data;
+                setImage(image_url);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error(err);
+            });
         };
     };
     const onChange = (e) => {
