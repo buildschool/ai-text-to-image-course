@@ -15,9 +15,14 @@ openai.api_key = config['OPENAI_API_KEY']
 def index():
     data = request.get_json()
     prompt = data['prompt']
-    response = openai.Image.create(
-        prompt=prompt,
-        n=1,
-        size="256x256"
-    )
-    return jsonify({"data":response["data"][0]["url"]})
+    photos = []
+    for i in range(10):
+        response = openai.Image.create(
+            prompt=prompt,
+            n=1,
+            size="256x256"
+        )
+        photos.append({
+            "url": response["data"][0]["url"]
+        })
+    return jsonify({"photos":photos})
